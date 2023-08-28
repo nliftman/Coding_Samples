@@ -4,3 +4,71 @@ author: "Naomi Liftman"
 date: "`r Sys.Date()`"
 output: pdf_document
 ---
+
+# Libraries
+```{r message = FALSE, warning = FALSE, error = FALSE}
+library(rio)
+library(tidyverse)
+library(ggplot2)
+```
+
+# Sex data 
+```{r}
+#import
+sex_data <- import("/Users/naomiliftman/Desktop/Coding_Samples/yeehaw/sex data/P_Data_Extract_From_Gender_Statistics/1b582265-9e0a-4fd5-8345-4828993b72ba_Data.csv")
+
+#select only the us
+us_sex_data <- sex_data %>% 
+  rename('country_code' = 4,
+         'series_name' = 1,
+         "year_21" = 23) %>% 
+  filter(country_code == 'USA') 
+
+#want to make new column for if the data is for women or men 
+# T is the combined average of them together 
+us_sex_data_fm <- us_sex_data %>%  
+   mutate(sex = case_when(grepl("female", series_name) ~ "F",
+                            grepl("male", series_name, ignore.case = TRUE) ~ "M",
+                          .default = "T"))
+
+#removing the .. and replacing with NA
+us_sex_data_fm[us_sex_data_fm == ".."] <- NA
+
+#creating a separate dataset for men and only 2021
+us_sex_m <- us_sex_data_fm %>% 
+  filter(sex == 'M') %>% 
+  select(series_name, country_code, year_21 )
+
+#creating a separate dataset for women and only 2021
+us_sex_w <- us_sex_data_fm %>% 
+  filter(sex == 'F') %>% 
+  select(series_name, country_code, year_21) 
+
+#change to numeric 
+us_sex_w$year_21 <- as.numeric(us_sex_w$year_21)
+
+#select the same columns for women and men in emergency funds to merge later
+us_sex_w_emergency_funds <- us_sex_w[10:20,]
+us_sex_m_emergency_funds <- us_sex_m[10:20,]
+
+#creating day and type of worry columns 
+us_sex_w_ef <- us_sex_w_emergency_funds %>% 
+  mutate(day = case_when(grepl("30", series_name) ~ "30",
+                            grepl("7", series_name, ignore.case = TRUE) ~ "7"),
+         type = case_when(grepl("not possible", series_name) ~ "1",
+                            grepl("possible and very difficult", series_name, ignore.case = TRUE) ~ "2",
+                          grepl("possible and somewhat difficult", series_name, ignore.case = TRUE) ~ "3",
+                          grepl("possible", series_name) ~ "4",
+                          grepl("possible and not difficult or somewhat difficult", series_name) ~ "5",
+                          grepl("possible and not difficult at all", series_name) ~ "6"))
+  
+```
+
+# just making some graphs
+
+```{r}
+ggplot(data = us_sex_w_emergency_funds, aes(x = series_name, y = year_21)) + 
+  geom_point()
+```
+
+

@@ -1,0 +1,55 @@
+---
+title: "Institutional Research Analyst Interview"
+author: "Naomi Liftman"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r message = FALSE, warning = FALSE, error = FALSE}
+#loading the necessary packages
+library(tidyverse)
+library(ggplot2)
+library(rio)
+```
+
+```{r}
+#import the green and the totals
+justgreen <- import("/Users/naomiliftman/Desktop/Coding_Samples/Green River College/Cred detail Table_green.xlsx")
+total <- import("/Users/naomiliftman/Desktop/Coding_Samples/Green River College/Cred detail Table_total.xlsx")
+
+#pivot longer for the green 
+greenpivot <- justgreen %>%
+  pivot_longer(!`Summary Level`, names_to = "year", values_to = "count") %>% 
+  rename(level = 1)
+
+#pivot total
+totalpivot <- total %>%
+  pivot_longer(!`Summary Level`, names_to = "year", values_to = "count") %>% 
+  rename(level = 1)
+
+```
+
+```{r}
+#graph greenriver alone! 
+ggplot(data = greenpivot, aes(x = year, y = count, color = level, 
+                              group = level, color = level)) + 
+  geom_point() +
+  geom_line() + 
+  labs(title = "Green River College Awards", y = 'Year', x = 'Number of Awards') +
+  scale_color_brewer(palette = "Set2")
+
+
+
+```
+
+```{r}
+#graph totals
+ggplot(data = totalpivot, aes(x = year, y = count, color = level, 
+                              group = level, color = level)) + 
+  geom_point() +
+  geom_line() + 
+  labs(title = "Total Awards", y = 'Year', x = 'Number of Awards') +
+  scale_color_brewer(palette = "Set2")
+```
+
+

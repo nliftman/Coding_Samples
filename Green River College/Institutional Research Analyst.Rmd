@@ -35,19 +35,15 @@ only_bac <- greenpivot %>%
   filter(level == "Applied Baccalaureate")
 ```
 
-```{r}
+```{r warning = FALSE}
 #graph greenriver alone! 
 ggplot(data = greenpivot, aes(x = year, y = count, color = level, 
                               group = level, color = level)) + 
   geom_point() +
   geom_line(linewidth = 1.2) + 
   labs(title = "Green River College Awards Between 2012 and 2023", y = 'Number of Awards', x = 'Year', plot.title = element_text(hjust = 0.5)) +
-  scale_color_manual(values = c("#ffbe4f", "#6bd2db", "#0c457d", "#e8702a"), name = "") + 
+  scale_color_manual(values = c("#d62976", "#800080", "#0c457d", "#FC913A"), name = "") + 
   theme_economist()
-
-
-
-
 ```
 
 ```{r}
@@ -60,9 +56,9 @@ total_compare <- totalpivot %>%
 ggplot(data = total_compare, aes(x = year, y = count, color = level, 
                               group = level, color = level)) + 
   geom_point() +
-  geom_line() + 
+  geom_line(linewidth = 1.2) + 
   labs(title = "Comparable College Awards Between 2012 and 2023", y = 'Number of Awards', x = 'Year') +
-  scale_color_manual(values = c("#ffbe4f", "#6bd2db", "#0c457d", "#e8702a"), name = "")+ 
+  scale_color_manual(values = c("#d62976", "#800080", "#0c457d", "#FC913A"), name = "")+ 
   theme_economist()
 ```
 

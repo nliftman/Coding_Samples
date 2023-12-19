@@ -55,7 +55,7 @@ ggplot(data = totalpivot, aes(x = year, y = count, color = level,
 ```
 
 ```{r}
-#impot the 2014 information and use options(scipen=999) to get rid of scientific notation
+#import the 2014 information and use options(scipen=999) to get rid of scientific notation
 compare_2014 <- import("cred by college table_2014.xlsx") 
 names(compare_2014)<-make.names(names(compare_2014),unique = TRUE)
 
@@ -86,7 +86,34 @@ ggplot(data = pivot_2014, aes(x = type_of_degree, y = count, color= ifelse(colle
 ```
 
 ```{r}
+#import the 2014 information and use options(scipen=999) to get rid of scientific notation
+compare_2023 <- import("cred by college table_2023.xlsx") 
+names(compare_2023)<-make.names(names(compare_2023),unique = TRUE)
 
+# create a nicer version to then be able to pivot
+attempts_23 <- compare_2023 %>%
+  slice(which(row_number() %% 3 == 1)) %>% 
+  rename(college = 1)  %>% 
+  select(college, Applied.Baccalaureate:Basic.Skills)
+
+#remove the grand total before pivoting
+attempts_23 <- attempts[-c(34), ]
+
+attempts_23 <- attempts_23 %>% 
+  rename(Baccalaureate = 2,
+         "Basic Skills" = 6)
+
+#pivoting now 
+pivot_2023 <- attempts_23 %>%
+  pivot_longer(!`college`, names_to = "type_of_degree", values_to = "count") 
+```
+
+```{r}
+#graph 2014
+ggplot(data = pivot_2023, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
+  geom_point() +
+  labs(title = "Total Awards", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
+  scale_color_brewer(palette = "Set1")
 ```
 
 

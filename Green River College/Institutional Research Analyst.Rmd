@@ -10,6 +10,7 @@ output: pdf_document
 library(tidyverse)
 library(ggplot2)
 library(rio)
+library(gt)
 ```
 
 ```{r}
@@ -116,6 +117,9 @@ ggplot(data = pivot_2023, aes(x = type_of_degree, y = count, color= ifelse(colle
   scale_color_brewer(palette = "Set1")
 ```
 
+```{r}
+gt 
+```
 
 
 

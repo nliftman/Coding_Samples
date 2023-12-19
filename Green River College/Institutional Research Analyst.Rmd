@@ -11,6 +11,7 @@ library(tidyverse)
 library(ggplot2)
 library(rio)
 library(gt)
+library(ggthemes)
 ```
 
 ```{r}
@@ -21,7 +22,8 @@ total <- import("/Users/naomiliftman/Desktop/Coding_Samples/Green River College/
 #pivot longer for the green 
 greenpivot <- justgreen %>%
   pivot_longer(!`Summary Level`, names_to = "year", values_to = "count") %>% 
-  rename(level = 1)
+  rename(level = 1) %>% 
+  filter(level!= "Apprenticeship")
 
 #pivot total
 totalpivot <- total %>%
@@ -34,12 +36,14 @@ only_bac <- greenpivot %>%
 
 ```{r}
 #graph greenriver alone! 
-ggplot(data = only_bac, aes(x = year, y = count, color = level, 
+ggplot(data = greenpivot, aes(x = year, y = count, color = level, 
                               group = level, color = level)) + 
   geom_point() +
-  geom_line() + 
-  labs(title = "Green River College Awards", y = 'Year', x = 'Number of Awards') +
-  scale_color_brewer(palette = "Set2")
+  geom_line(linewidth = 1) + 
+  labs(title = "Green River College Awards Between 2012 and 2023", y = 'Number of Awards', x = 'Year', plot.title = element_text(hjust = 0.5)) +
+  scale_color_manual(values = c("#ffbe4f", "#6bd2db", "#0c457d", "#e8702a"), name = "") + 
+  theme_economist()
+
 
 
 
@@ -51,7 +55,7 @@ ggplot(data = totalpivot, aes(x = year, y = count, color = level,
                               group = level, color = level)) + 
   geom_point() +
   geom_line() + 
-  labs(title = "Total Awards", y = 'Year', x = 'Number of Awards') +
+  labs(title = "Comparable College Awards Between 2012 and 2023", y = 'Number of Awards', x = 'Year') +
   scale_color_brewer(palette = "Set2")
 ```
 

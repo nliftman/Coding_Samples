@@ -69,8 +69,7 @@ attempts <- compare_2014 %>%
 attempts_2 <- attempts[-c(34), ]
 
 attempts_2 <- attempts_2 %>% 
-  rename(Baccalaureate = 2,
-         "Basic Skills" = 6)
+  rename(Ba)
 
 #pivoting now 
 pivot_2014 <- attempts_2 %>%
@@ -81,13 +80,10 @@ pivot_2014 <- attempts_2 %>%
 #graph 2014
 ggplot(data = pivot_2014, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
   geom_point() +
-  labs(title = "Total Awards", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
-  scale_color_brewer(palette = "Set1")
+  labs(title = "Total Awards", y = 'Year', x = 'Number of Awards', color = "College") +
+  scale_color_brewer(palette = "Set2")
 ```
 
-```{r}
-
-```
 
 
 

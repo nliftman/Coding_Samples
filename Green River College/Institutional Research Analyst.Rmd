@@ -99,8 +99,8 @@ pivot_2014_attempts[pivot_2014 == "Basic Skills"] <- "BAS"
 
 ```{r}
 #graph 2014
-ggplot(data = pivot_2014_attempts, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
-  geom_point() +
+p14 <- ggplot(data = pivot_2014_attempts, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
+  geom_point(show.legend = FALSE) +
   labs(title = "Total Awards 2014", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
   scale_color_brewer(palette = "Set1") +
   theme_tufte()
@@ -118,7 +118,7 @@ attempts_23 <- compare_2023 %>%
   select(college, Applied.Baccalaureate:Basic.Skills)
 
 #remove the grand total before pivoting
-attempts_23 <- attempts[-c(34), ]
+attempts_23 <- attempts_23[-c(34), ]
 
 attempts_23 <- attempts_23 %>% 
   rename(Baccalaureate = 2,
@@ -139,8 +139,8 @@ pivot_2023_attempts[pivot_2023 == "Basic Skills"] <- "BAS"
 
 ```{r}
 #graph 2014
-ggplot(data = pivot_2023_attempts, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
-  geom_point() +
+p23 <- ggplot(data = pivot_2023_attempts, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
+  geom_point(show.legend =  FALSE) +
   labs(title = "Total Awards 2023", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
   scale_color_brewer(palette = "Set1") + 
   theme_tufte()

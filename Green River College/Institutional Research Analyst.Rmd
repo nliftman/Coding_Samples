@@ -12,6 +12,7 @@ library(ggplot2)
 library(rio)
 library(gt)
 library(ggthemes)
+library(gridExtra)
 ```
 
 ```{r}
@@ -39,7 +40,7 @@ only_bac <- greenpivot %>%
 ggplot(data = greenpivot, aes(x = year, y = count, color = level, 
                               group = level, color = level)) + 
   geom_point() +
-  geom_line(linewidth = 1) + 
+  geom_line(linewidth = 1.2) + 
   labs(title = "Green River College Awards Between 2012 and 2023", y = 'Number of Awards', x = 'Year', plot.title = element_text(hjust = 0.5)) +
   scale_color_manual(values = c("#ffbe4f", "#6bd2db", "#0c457d", "#e8702a"), name = "") + 
   theme_economist()
@@ -50,13 +51,19 @@ ggplot(data = greenpivot, aes(x = year, y = count, color = level,
 ```
 
 ```{r}
+#making it comparable to green river 
+total_compare <- totalpivot %>% 
+  filter(level != "Apprenticeship") %>% 
+  filter(level != "Non-Credit")
+
 #graph totals
-ggplot(data = totalpivot, aes(x = year, y = count, color = level, 
+ggplot(data = total_compare, aes(x = year, y = count, color = level, 
                               group = level, color = level)) + 
   geom_point() +
   geom_line() + 
   labs(title = "Comparable College Awards Between 2012 and 2023", y = 'Number of Awards', x = 'Year') +
-  scale_color_brewer(palette = "Set2")
+  scale_color_manual(values = c("#ffbe4f", "#6bd2db", "#0c457d", "#e8702a"), name = "")+ 
+  theme_economist()
 ```
 
 ```{r}
@@ -65,29 +72,38 @@ compare_2014 <- import("cred by college table_2014.xlsx")
 names(compare_2014)<-make.names(names(compare_2014),unique = TRUE)
 
 # create a nicer version to then be able to pivot
-attempts <- compare_2014 %>%
+attempts_14 <- compare_2014 %>%
   slice(which(row_number() %% 3 == 1)) %>% 
   rename(college = 1)  %>% 
   select(college, Applied.Baccalaureate:Basic.Skills)
 
 #remove the grand total before pivoting
-attempts_2 <- attempts[-c(34), ]
+attempts_14 <- attempts_14[-c(34), ]
 
-attempts_2 <- attempts_2 %>% 
+attempts_14 <- attempts_14 %>% 
   rename(Baccalaureate = 2,
          "Basic Skills" = 6)
 
 #pivoting now 
-pivot_2014 <- attempts_2 %>%
+pivot_2014 <- attempts_14 %>%
   pivot_longer(!`college`, names_to = "type_of_degree", values_to = "count") 
+
+pivot_2014_attempts <- pivot_2014
+
+pivot_2014_attempts[pivot_2014 == "Baccalaureate"] <- "BAC"
+pivot_2014_attempts[pivot_2014 == "Associate"] <- "ASO"
+pivot_2014_attempts[pivot_2014 == "Apprenticeship"] <- "APR"
+pivot_2014_attempts[pivot_2014 == "Certificate"] <- "CRT"
+pivot_2014_attempts[pivot_2014 == "Basic Skills"] <- "BAS"
 ```
 
 ```{r}
 #graph 2014
-ggplot(data = pivot_2014, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
+ggplot(data = pivot_2014_attempts, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
   geom_point() +
-  labs(title = "Total Awards", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
-  scale_color_brewer(palette = "Set1")
+  labs(title = "Total Awards 2014", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
+  scale_color_brewer(palette = "Set1") +
+  theme_tufte()
 ```
 
 ```{r}
@@ -111,18 +127,27 @@ attempts_23 <- attempts_23 %>%
 #pivoting now 
 pivot_2023 <- attempts_23 %>%
   pivot_longer(!`college`, names_to = "type_of_degree", values_to = "count") 
+
+pivot_2023_attempts <- pivot_2023
+
+pivot_2023_attempts[pivot_2023 == "Baccalaureate"] <- "BAC"
+pivot_2023_attempts[pivot_2023 == "Associate"] <- "ASO"
+pivot_2023_attempts[pivot_2023 == "Apprenticeship"] <- "APR"
+pivot_2023_attempts[pivot_2023 == "Certificate"] <- "CRT"
+pivot_2023_attempts[pivot_2023 == "Basic Skills"] <- "BAS"
 ```
 
 ```{r}
 #graph 2014
-ggplot(data = pivot_2023, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
+ggplot(data = pivot_2023_attempts, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
   geom_point() +
-  labs(title = "Total Awards", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
-  scale_color_brewer(palette = "Set1")
+  labs(title = "Total Awards 2023", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
+  scale_color_brewer(palette = "Set1") + 
+  theme_tufte()
 ```
 
-```{r}
-gt 
+```{r warning = FALSE}
+grid.arrange(p14, p23, ncol = 2)
 ```
 
 

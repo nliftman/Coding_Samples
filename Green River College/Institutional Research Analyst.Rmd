@@ -102,8 +102,8 @@ pivot_2014_attempts[pivot_2014 == "Basic Skills"] <- "BAS"
 p14 <- ggplot(data = pivot_2014_attempts, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
   geom_point(show.legend = FALSE) +
   labs(title = "Total Awards 2014", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
-  scale_color_brewer(palette = "Set1") +
-  theme_tufte()
+  scale_color_manual(values = c("#317873", "#ff93ac")) + 
+  theme_minimal()
 ```
 
 ```{r}
@@ -142,8 +142,9 @@ pivot_2023_attempts[pivot_2023 == "Basic Skills"] <- "BAS"
 p23 <- ggplot(data = pivot_2023_attempts, aes(x = type_of_degree, y = count, color= ifelse(college == "Green River", "Green River", "Other Colleges"))) + 
   geom_point(show.legend =  FALSE) +
   labs(title = "Total Awards 2023", y = 'Percent of all Awards', x = 'Type of Awards', color = "College") +
-  scale_color_brewer(palette = "Set1") + 
-  theme_tufte()
+  scale_color_manual(values = c("#317873", "#ff93ac")) + 
+  theme_minimal() +
+  ylim(0.00, 0.25)
 ```
 
 ```{r warning = FALSE}

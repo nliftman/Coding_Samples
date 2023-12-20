@@ -164,7 +164,7 @@ grid.arrange(p14, p23, ncol = 2)
 
 
 # Green vs others over time
-
+# Creating my own Green Data
 ```{r}
 #import just the green data 
 green <- import("cs_bar_green.xlsx")
@@ -174,12 +174,145 @@ names(green)<-make.names(names(green),unique = TRUE)
 green <- green %>% 
   rename(total =4)
 
-#select only the totals 
-green <- green %>% 
-  filter(total== "Total")
+#filling the years and the summary levels 
+green_years <- green %>% 
+  fill(Academic.Year) %>% 
+  fill(Summary.Level)  %>% 
+  filter(total == "Total") %>% 
+  mutate(College.Name = "Green River") %>% 
+  filter(Summary.Level != "Non-Credit")
+
+#converting all the data hopefully into one column but includes NAs
+green_years <- unite(green_years, col = "count", c("X2013", "X2014", "X2015", "X2016", "X2017", "X2018", "X2019", "X2020", "X2021", "X2022", "X2023"), sep = "")
+
+#remove all the NAs from our number columns and then convert to numeric 
+green_years$count <- gsub("NA", "", green_years$count)
+green_years$count <- as.numeric(green_years$count)
+```
+
+# Clark Time
+```{r}
+#import just the green data 
+clark <- import("cs_bar_clark.xlsx")
+names(clark)<-make.names(names(clark),unique = TRUE)
+
+#rename!
+clark <- clark %>% 
+  rename(total =4)
+
+#filling the years and the summary levels 
+clark_years <- clark %>% 
+  fill(Academic.Year) %>% 
+  fill(Summary.Level)  %>% 
+  filter(total == "Total") %>% 
+  mutate(College.Name = "Clark") %>% 
+  filter(Summary.Level != "Non-Credit")
+
+#converting all the data hopefully into one column but includes NAs
+clark_years <- unite(clark_years, col = "count", c("X2013", "X2014", "X2015", "X2016", "X2017", "X2018", "X2019", "X2020", "X2021", "X2022", "X2023"), sep = "")
+
+#remove all the NAs from our number columns and then convert to numeric 
+clark_years$count <- gsub("NA", "", clark_years$count) 
+clark_years$count <- as.numeric(clark_years$count)
+```
+
+# Bates 
+```{r}
+#import just the bates data 
+bates <- import("cs_bar_bates.xlsx")
+names(bates)<-make.names(names(bates),unique = TRUE)
+
+#rename!
+bates <- bates %>% 
+  rename(total =4)
+
+#filling the years and the summary levels 
+bates_years <- bates %>% 
+  fill(Academic.Year) %>% 
+  fill(Summary.Level)  %>% 
+  filter(total == "Total") %>% 
+  mutate(College.Name = "Bates") %>% 
+  filter(Summary.Level != "Non-Credit")
+
+#converting all the data hopefully into one column but includes NAs
+bates_years <- unite(bates_years, col = "count", c("X2013", "X2014", "X2015", "X2016", "X2017", "X2018", "X2019", "X2020", "X2021", "X2022", "X2023"), sep = "")
+
+#remove all the NAs from our number columns and then convert to numeric 
+bates_years$count <- gsub("NA", "", bates_years$count) 
+bates_years$count <- as.numeric(bates_years$count)
+```
+
+# Everett 
+```{r}
+#import just the everett data 
+everett <- import("cs_bar_everett.xlsx")
+names(everett)<-make.names(names(everett),unique = TRUE)
+
+#rename!
+everett <- everett %>% 
+  rename(total =4)
+
+#filling the years and the summary levels 
+everett_years <- everett %>% 
+  fill(Academic.Year) %>% 
+  fill(Summary.Level)  %>% 
+  filter(total == "Total") %>% 
+  mutate(College.Name = "Everett") %>% 
+  filter(Summary.Level != "Non-Credit")
+
+#converting all the data hopefully into one column but includes NAs
+everett_years <- unite(everett_years, col = "count", c("X2013", "X2014", "X2015", "X2016", "X2017", "X2018", "X2019", "X2020", "X2021", "X2022", "X2023"), sep = "")
+
+#remove all the NAs from our number columns and then convert to numeric 
+everett_years$count <- gsub("NA", "", everett_years$count) 
+everett_years$count <- as.numeric(everett_years$count)
 ```
 
 
+# Graphs!
+```{r warning = FALSE}
+#graph of clark
+ggplot(clark_years, aes(x = Academic.Year, y = count, group = Summary.Level, color = Summary.Level)) + 
+  geom_point(show.legend = FALSE) +
+  geom_line(linewidth = .8, show.legend = FALSE) +
+  scale_color_manual(values = c( "#8a2be2", "#ff1493", "#000080", "#00eeee", "#66cd00"))  +
+  labs(title = "Clark", x = "Year", y = "Count", color = "Award Type") +
+  ylim(0, 2200) +
+  theme_bw() 
+
+#graph of green
+ggplot(green_years, aes(x = Academic.Year, y = count, group = Summary.Level, color = Summary.Level)) + 
+  geom_point(show.legend = FALSE) +
+  geom_line(linewidth = .8, show.legend = FALSE) +
+  scale_color_manual(values = c( "#8a2be2", "#ff1493", "#000080", "#00eeee", "#66cd00"))  +
+  labs(title = "Green River", x = "Year", y = "Count", color = "Award Type") +
+  ylim(0,2200)+
+  theme_bw()
+
+#graph of bates
+ggplot(bates_years, aes(x = Academic.Year, y = count, group = Summary.Level, color = Summary.Level)) + 
+  geom_point(show.legend = FALSE) +
+  geom_line(linewidth = .8, show.legend = FALSE) +
+  scale_color_manual(values = c( "#8a2be2", "#ff1493", "#000080", "#00eeee", "#66cd00"))  +
+  labs(title = "Bates", x = "Year", y = "Count", color = "Award Type") +
+  ylim(0,2200)+
+  theme_bw()
+
+#graph of everett
+ggplot(everett_years, aes(x = Academic.Year, y = count, group = Summary.Level, color = Summary.Level)) + 
+  geom_point(show.legend = FALSE) +
+  geom_line(linewidth = .8, show.legend = FALSE) +
+  scale_color_manual(values = c( "#8a2be2", "#ff1493", "#000080", "#00eeee", "#66cd00"))  +
+  labs(title = "Everett", x = "Year", y = "Count", color = "Award Type") +
+  ylim(0,2200)+
+  theme_bw()
+```
+
+# Combining
+```{r}
+#combining clark and green river to make a prettier version! lmao
+grid.arrange(p_clark, p_green, p_bates, p_everett, ncol = 4)
+```
 
 
 

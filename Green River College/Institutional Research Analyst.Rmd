@@ -4,7 +4,7 @@ author: "Naomi Liftman"
 date: "`r Sys.Date()`"
 output: pdf_document
 ---
-
+# Load Packages
 ```{r message = FALSE, warning = FALSE, error = FALSE}
 #loading the necessary packages
 library(tidyverse)
@@ -15,6 +15,7 @@ library(ggthemes)
 library(gridExtra)
 ```
 
+# Graph and Data for Bac vs other Schools
 ```{r}
 #import the green and the totals
 justgreen <- import("/Users/naomiliftman/Desktop/Coding_Samples/Green River College/Cred detail Table_green.xlsx")
@@ -73,6 +74,8 @@ ggplot(data = total_compare, aes(x = year, y = count, color = level,
   scale_color_manual(values = c("#d62976", "#800080", "#0c457d", "#FC913A"), name = "")+ 
   theme_economist()
 ```
+
+# 2014 vs 2023 Graphs and Data
 
 ```{r}
 #import the 2014 information and use options(scipen=999) to get rid of scientific notation
@@ -158,6 +161,25 @@ p23 <- ggplot(data = pivot_2023_attempts, aes(x = type_of_degree, y = count, col
 ```{r warning = FALSE}
 grid.arrange(p14, p23, ncol = 2)
 ```
+
+
+# Green vs others over time
+
+```{r}
+#import just the green data 
+green <- import("cs_bar_green.xlsx")
+names(green)<-make.names(names(green),unique = TRUE)
+
+#rename!
+green <- green %>% 
+  rename(total =4)
+
+#select only the totals 
+green <- green %>% 
+  filter(total== "Total")
+```
+
+
 
 
 

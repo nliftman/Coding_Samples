@@ -47,6 +47,18 @@ ggplot(data = greenpivot, aes(x = year, y = count, color = level,
 ```
 
 ```{r}
+#graph greenriver with just bac 
+ggplot(data = only_bac, aes(x = year, y = count, color = level, 
+                              group = level, color = level)) + 
+  geom_point() +
+  geom_line(linewidth = 1.2) + 
+  labs(title = "Green River College Baccalaureate Between 2012 and 2023", y = 'Number of Awards', x = 'Year') +
+  scale_color_manual(values = c("#d62976"), name = "") + 
+  theme_economist()
+```
+
+
+```{r}
 #making it comparable to green river 
 total_compare <- totalpivot %>% 
   filter(level != "Apprenticeship") %>% 
